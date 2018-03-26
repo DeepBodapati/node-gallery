@@ -1,4 +1,5 @@
 // Usage example with ExpressJS
+const publicIp = require('public-ip');
 var express = require('express'),
 port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000,
 host = process.env.OPENSHIFT_NODEJS_IP;
@@ -10,15 +11,15 @@ app.use(express.static('./'));
 
 // In your project, this would be require('node-gallery')
 app.use('/gallery', require('../lib/gallery.js')({
-  staticFiles : 'resources/photos',
+  staticFiles : '../../ebay_c/imgs/',
   urlRoot : 'gallery',
-  title : 'Example Gallery',
+  title : 'Scraped images',
   render : false // 
 }), function(req, res, next){
   return res.render('gallery', { galleryHtml : req.html });
 });
 
-
 app.listen(port, host);
-host = host || 'localhost';
-console.log('node-gallery listening on ' + host  + ':' + port);
+publicIp.v4().then(ip => {
+	console.log('preview images at ' + ip  + ':' + port + '/gallery');
+});
